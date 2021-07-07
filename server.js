@@ -1,6 +1,9 @@
 const express = require('express');
 const dotenv = require('dotenv');
 
+// Third party middleware for logger purpose
+const morgan = require('morgan');
+
 //logger files
 const logger = require('./middleware/logger');
 
@@ -12,6 +15,9 @@ const bootcamps = require('./routes/bootcamps');
 
 const app = express();
 
+if (process.env.NODE_ENV === 'development') {
+  app.use(morgan(`dev`));
+}
 app.use(logger);
 
 // Mount routers
