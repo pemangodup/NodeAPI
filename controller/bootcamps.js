@@ -1,119 +1,81 @@
+const ErrorResponse = require('../utils/errorResponse');
+const Bootcamps = require('../models/Bootcamps');
+const asyncHandler = require('../middleware/async');
+
 // @desc    Get all bootcamps
 // @route   GET /api/v1/bootcamps
-
-const Bootcamps = require('../models/Bootcamps');
-
 // @access  Public
-exports.getBootcamps = async (req, res, next) => {
-  try {
-    const bootcamps = await Bootcamps.find();
-    res.status(200).json({
-      success: true,
-      count: bootcamps.length,
-      data: bootcamps,
-    });
-  } catch (err) {
-    res.status(400).json({
-      sucess: false,
-      error: `${err}`.red.bold,
-    });
-  }
-};
+exports.getBootcamps = asyncHandler(async (req, res, next) => {
+  const bootcamps = await Bootcamps.find();
+  res.status(200).json({
+    success: true,
+    count: bootcamps.length,
+    data: bootcamps,
+  });
+});
 
 // @desc    Get single bootcamps
 // @route   GET /api/v1/bootcamps/:id
 // @access  Public
-exports.getBootcamp = async (req, res, next) => {
-  try {
-    const bootcamp = await Bootcamps.findById(req.params.id);
+exports.getBootcamp = asyncHandler(async (req, res, next) => {
+  const bootcamp = await Bootcamps.findById(req.params.id);
 
-    if (!bootcamp) {
-      return res.status(400).json({
-        success: false,
-      });
-    }
-
-    res.status(200).json({
-      success: true,
-      data: bootcamp,
-    });
-  } catch (err) {
-    res.status(400).json({
-      success: false,
-      msg: `${err}`,
-    });
+  if (!bootcamp) {
+    return next(
+      new ErrorResponse(`Bootcamp not found with id of ${req.params.id}`, 404)
+    );
   }
-};
+
+  res.status(200).json({
+    success: true,
+    data: bootcamp,
+  });
+});
 
 // @desc    Create new bootcamp
 // @route   POST /api/v1/bootcamps
 // @access  Private
-exports.createBootcamp = async (req, res, next) => {
-  try {
-    const bootcamp = await Bootcamps.create(req.body);
-    res.status(201).json({
-      success: true,
-      data: bootcamp,
-    });
-  } catch (err) {
-    res.status(400).json({
-      success: false,
-      data: `${err}`,
-    });
-  }
-};
+exports.createBootcamp = asyncHandler(async (req, res, next) => {
+  const bootcamp = await Bootcamps.create(req.body);
+  res.status(201).json({
+    success: true,
+    data: bootcamp,
+  });
+});
 
 // @desc    Update bootcamp
 // @route   PUT /api/v1/bootcamps/:id
 // @access  Private
-exports.updateBootcamp = async (req, res, next) => {
-  try {
-    const bootcamp = await Bootcamps.findByIdAndUpdate(
-      req.params.id,
-      req.body,
-      {
-        new: true,
-        runValidators: true,
-      }
-    );
+exports.updateBootcamp = asyncHandler(async (req, res, next) => {
+  const bootcamp = await Bootcamps.findByIdAndUpdate(req.params.id, req.body, {
+    new: true,
+    runValidators: true,
+  });
 
-    if (!bootcamp) {
-      return res.status(400).json({
-        success: false,
-      });
-    }
-    res.status(200).json({
-      success: true,
-      data: bootcamp,
-    });
-  } catch (err) {
-    res.status(400).json({
-      success: true,
-      data: `${err}`,
-    });
+  if (!bootcamp) {
+    return next(
+      new ErrorResponse(`Bootcamp not found with id of ${req.params.id}`, 404)
+    );
   }
-};
+  res.status(200).json({
+    success: true,
+    data: bootcamp,
+  });
+});
 
 // @desc    Delete bootcamp
 // @route   DELETE /api/v1/bootcamps/:id
 // @access  Private
-exports.deleteBootcamp = async (req, res, next) => {
-  try {
-    const bootcamp = await Bootcamps.findByIdAndDelete(req.params.id);
+exports.deleteBootcamp = asyncHandler(async (req, res, next) => {
+  const bootcamp = await Bootcamps.findByIdAndDelete(req.params.id);
 
-    if (!bootcamp) {
-      return res.status(400).json({
-        success: false,
-      });
-    }
-    res.status(200).json({
-      success: true,
-      data: {},
-    });
-  } catch (err) {
-    res.status(400).json({
-      success: false,
-      msg: `${err}`,
-    });
+  if (!bootcamp) {
+    return next(
+      new ErrorResponse(`Bootcamp not found with id of ${req.params.id}`, 404)
+    );
   }
-};
+  res.status(200).json({
+    success: true,
+    data: {},
+  });
+});
