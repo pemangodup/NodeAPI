@@ -4,19 +4,23 @@ const dotenv = require('dotenv');
 const connectDB = require('./config/db');
 const colors = require('colors');
 const errorHandler = require('./middleware/error');
+// Routes files
+const bootcamps = require('./routes/bootcamps');
+
+// Third party middleware for logger purpose
+const morgan = require('morgan');
+
+//logger files
+const logger = require('./middleware/logger');
 
 //load env vars
 dotenv.config({ path: './config/config.env' });
 
 // connect to db
 connectDB();
-// Routes files
-const bootcamps = require('./routes/bootcamps');
-// Third party middleware for logger purpose
-const morgan = require('morgan');
-//logger files
-const logger = require('./middleware/logger');
+
 const PORT = process.env.PORT || 5000;
+
 const app = express();
 
 // middlewares.....
